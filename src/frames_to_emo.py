@@ -93,13 +93,24 @@ def paths_to_emo(paths):
 
 #%%
 def mean_emo(result):
-    sum_all = np.zeros(len(result[0][0]['scores']))
-    for frame in result:
-        x =  frame[0]['scores'].values() 
-        a = np.fromiter(iter(x), dtype=float)
-        sum_all = sum_all + a
-    mean_of_frames = sum_all/len(result)
-    return mean_of_frames
+    usable = [True for i in range(0, len(result))]
+    for i in range(0,len(result)-1):
+        try:
+            what = result[i][0]['scores']
+        except Exception as x:
+            usable[i] = False
+            print('No reasonable API result for image index ' + str(i))
+            pass
+    first_usable = min(np.where(usable)[0])
+    
+    sum_all = np.zeros(len(result[first_usable][0]['scores']))
+    for i in range(0,len(result)-1):
+        if usable[i]:            
+            x =  result[i][0]['scores'].values() 
+            a = np.fromiter(iter(x), dtype=float)
+            sum_all = sum_all + a
+    mean_of_frames = sum_all/sum(usable)
+    return mean_of_frames 
 #%%
 
 #%%
