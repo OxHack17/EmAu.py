@@ -103,6 +103,7 @@ def mean_emo(result):
     return mean_of_frames
 #%%
 
+#%%
 def frames_to_change(frames_dir, frames_before, frames_after):    
     paths_before = frames_to_paths(frames_dir, frames_before)
     paths_after = frames_to_paths(frames_dir, frames_after)
@@ -112,11 +113,25 @@ def frames_to_change(frames_dir, frames_before, frames_after):
     emo_after = mean_emo(result_after)
     emo_change = emo_after-emo_before
     return emo_change
-    
+  
+#%%  
+#shit just works
 frames_to_change("C:/hack/project/frames_fake",range(1,6),range(5,11))  
+#%%
+import pandas as pd
 
-#a = paths_to_emo(frames_to_paths("C:/hack/project/frames_fake",[1,2,3,4,5])
-#print(a)
-#b = mean_emo()
+#take cole's data
+x = pd.DataFrame(np.random.randn(6,4), columns=list("ABCD"))
+print(x)
 
+#add emotion columns
+emo_names =["E","F","G"]
+for n, t in enumerate(emo_names):    
+    x[t] = None    
+print(x)
 
+#fill 'em up row by row    
+for k, v in x.iterrows():
+    x.loc[k,emo_names] = [1,2,3]
+
+print(x)
