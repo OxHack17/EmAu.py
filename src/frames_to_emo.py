@@ -81,13 +81,9 @@ def paths_to_emo(paths):
 
 	api_result = []
 	for path in paths:
-		with open(path, 'rb' ) as f:
-		    data = f.read()
-                    try: 
-			api_result.append(processRequest( json, data, headers, params ))
-                        break
-                    except: ValueError
-                            
+	    with open(path, 'rb' ) as f:
+	        data = f.read()
+	        api_result.append(processRequest( json, data, headers, params ))            
 	return api_result
 #%%
 
@@ -175,11 +171,12 @@ x = process_audio()
 
 pp.pprint(x)
 
+x = x.drop([0,1,2])
 #add emotion columns
 emo_names = ['happiness', 'sadness', 'neutral', 'anger', 'surprise', 'disgust', 'contempt', 'fear']
 for n, t in enumerate(emo_names):    
     x[t] = None    
-#print(x)
+print(x)
 
 #fill 'em up row by row    
 for k, v in x.iterrows():
@@ -187,10 +184,10 @@ for k, v in x.iterrows():
     set_after = list(range(v["frame.end"], v["frame.after.end"] + 1))
     x.loc[k,emo_names] = frames_to_change("../frames",set_before, set_after)
     #print(v)
-    print("\n" + str(k) + ":")
-    print(set_before)
-    print(set_after)
+   # print("\n" + str(k) + ":")
+   # print(set_before)
+   # print(set_after)
     #print(v["frame.start"])
     #print(v["frame.end"])
 
-#print(x)
+print(x)
