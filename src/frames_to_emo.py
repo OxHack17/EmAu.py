@@ -82,10 +82,11 @@ def paths_to_emo(paths):
 	api_result = []
 	for path in paths:
 		with open(path, 'rb' ) as f:
-			data = f.read()
-                        try: 
-			    api_result.append(processRequest( json, data, headers, params ))
-                        except: ValueError
+		    data = f.read()
+                    try: 
+			api_result.append(processRequest( json, data, headers, params ))
+                        break
+                    except: ValueError
                             
 	return api_result
 #%%
