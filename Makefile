@@ -12,15 +12,15 @@ data/video.mp4: data/video.MOV
 # This will break down the video into frames which can be analysed.
 images: data/video.mp4
 	mkdir -p frames
-	ffmpeg -i $< -r 5 -f image2 frames/frame-%05d.jpg
+	ffmpeg -i $< -r 1 -f image2 frames/frame-%05d.jpg
 
 
 audio: data/video.mp4
-	ffmpeg -i $< -vn -acodec pcm_s16le -ar 44100 -f segment -segment_time 15 -ac 2 data/audio%03d.wav
+	ffmpeg -i $< -vn -acodec pcm_s16le -f segment -segment_time 5 -ac 2 data/audio%03d.wav
 
-data/transcript.json: audio
-	curl -X POST "https://speech.platform.bing.com/speech/recognition/dictation/cognitiveservices/v1?language=en-us&format=detailed" -H "Transfer-Encoding: chunked" -H "Ocp-Apim-Subscription-Key: f745fdb731c84c25bfe437be220e0be6" -H "Content-type: audio/wav; codec=audio/pcm; samplerate=16000" --data-binary @data/audio000.wav >> $@ 
-
+data/data.json: audio
+	python3 src/transcribe.py 
+	
 time: data/video.mp4
 	echo $(time_up)
 
