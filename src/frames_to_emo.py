@@ -1,20 +1,13 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Nov 25 22:29:19 2017
-
-@author: cq
-"""
-import os
+from __future__ import print_function
 import numpy as np
 import time 
 import requests
 import cv2
 import operator
-import numpy as np
-from __future__ import print_function
 import pandas as pd
 import glob, os
-
+import speech_recognition as sr
+import pprint as pp
 
 _url = 'https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize'
 _key = 'e0ca0fede7a6421a90d27dfec5fb008f'
@@ -90,7 +83,10 @@ def paths_to_emo(paths):
 	for path in paths:
 		with open(path, 'rb' ) as f:
 			data = f.read()
-			api_result.append(processRequest( json, data, headers, params ))
+                        try: 
+			    api_result.append(processRequest( json, data, headers, params ))
+                        except: ValueError
+                            
 	return api_result
 #%%
 
@@ -126,7 +122,7 @@ def frames_to_change(frames_dir, frames_before, frames_after):
 
 def process_audio(path = "../data/", frame_rate = 1):
 
-    df = pd.DataFrame(columns = ['time.start', 'time.end','frame.start', 'frame.end', 'text'])
+    df = pd.DataFrame(columns = ['frame.before.start','frame.start', 'frame.end', 'frame.after.end', 'time.start', 'time.end', 'text', 'id'])
 
     for filename in glob.glob(path +"*.wav"):
         print(filename)
@@ -150,11 +146,15 @@ def process_audio(path = "../data/", frame_rate = 1):
 
         id = int(os.path.splitext(os.path.basename(filename))[0][5:])
 
-        d = {'time.start': [max(5*id-5, 0)], 'time.end': [5*id], 'frame.start': [frame_rate*5*id - 5], 'frame.end': [frame_rate*5*id], 'text': [text]}
+        d = {'frame.before.start': [max(5*id-5, 0)], 'frame.start': [max(5*id, 0)], 'frame.end': [5*id+5], 'frame.after.end': [5*id+10], 'time.start': [max(frame_rate*5*id, 0)], 'time.end': [frame_rate*5*id+5], 'text': [text], 'id': [id]}
         df2 = pd.DataFrame(data = d) 
         #pp.pprint(df2)
 
         df = df.append(df2) 
+        
+    df.sort_values(by = "frame.start", inplace = True)
+    df.reset_index(drop = True, inplace = True) 
+    return df
       
 
 #take cole's data
@@ -167,12 +167,18 @@ pp.pprint(x)
 emo_names = ['happiness', 'sadness', 'neutral', 'anger', 'surprise', 'disgust', 'contempt', 'fear']
 for n, t in enumerate(emo_names):    
     x[t] = None    
-print(x)
+#print(x)
 
 #fill 'em up row by row    
 for k, v in x.iterrows():
-#    x.loc[k,emo_names] = frames_to_change("../frames",v["frames.start"],v["frames.end"])
-    print(v["frames.start"])
-    print(v["frames.end"])
+    set_before = list(range(v["frame.before.start"], v["frame.start"] + 1)) 
+    set_after = list(range(v["frame.end"], v["frame.after.end"] + 1))
+    x.loc[k,emo_names] = frames_to_change("../frames",set_before, set_after)
+    #print(v)
+    print("\n" + str(k) + ":")
+    print(set_before)
+    print(set_after)
+    #print(v["frame.start"])
+    #print(v["frame.end"])
 
-print(x)
+#print(x)
