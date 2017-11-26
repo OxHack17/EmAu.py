@@ -12,6 +12,9 @@ import cv2
 import operator
 import numpy as np
 from __future__ import print_function
+import pandas as pd
+import glob, os
+
 
 _url = 'https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize'
 _key = 'e0ca0fede7a6421a90d27dfec5fb008f'
@@ -116,22 +119,60 @@ def frames_to_change(frames_dir, frames_before, frames_after):
   
 #%%  
 #shit just works
-frames_to_change("C:/hack/project/frames_fake",range(1,6),range(5,11))  
+#frames_to_change("frames_fake",range(1,6),range(5,11))  
 #%%
-import pandas as pd
+
+# This generates the time stamps and words
+
+def process_audio(path = "../data/", frame_rate = 1):
+
+    df = pd.DataFrame(columns = ['time.start', 'time.end','frame.start', 'frame.end', 'text'])
+
+    for filename in glob.glob(path +"*.wav"):
+        print(filename)
+
+        AUDIO_FILE = "../data/" + filename
+
+        r = sr.Recognizer()
+        with sr.AudioFile(AUDIO_FILE) as source:
+            audio = r.record(source) # read the entire audio fileA
+
+        BING_KEY="f745fdb731c84c25bfe437be220e0be6"
+
+        try:
+            text = r.recognize_bing(audio, key=BING_KEY)
+        except sr.UnknownValueError:
+            text = ""    
+        except sr.RequestError as e:
+            print("Could not request results from Microsoft Bing Voice Recognition service; {0}".format(e)) 
+
+        # Parse the file name
+
+        id = int(os.path.splitext(os.path.basename(filename))[0][5:])
+
+        d = {'time.start': [max(5*id-5, 0)], 'time.end': [5*id], 'frame.start': [frame_rate*5*id - 5], 'frame.end': [frame_rate*5*id], 'text': [text]}
+        df2 = pd.DataFrame(data = d) 
+        #pp.pprint(df2)
+
+        df = df.append(df2) 
+      
 
 #take cole's data
-x = pd.DataFrame(np.random.randn(6,4), columns=list("ABCD"))
-print(x)
+#x = pd.DataFrame(np.random.randn(6,4), columns=list("ABCD"))
+x = process_audio()
+
+pp.pprint(x)
 
 #add emotion columns
-emo_names =["E","F","G"]
+emo_names = ['happiness', 'sadness', 'neutral', 'anger', 'surprise', 'disgust', 'contempt', 'fear']
 for n, t in enumerate(emo_names):    
     x[t] = None    
 print(x)
 
 #fill 'em up row by row    
 for k, v in x.iterrows():
-    x.loc[k,emo_names] = [1,2,3]
+#    x.loc[k,emo_names] = frames_to_change("../frames",v["frames.start"],v["frames.end"])
+    print(v["frames.start"])
+    print(v["frames.end"])
 
 print(x)
