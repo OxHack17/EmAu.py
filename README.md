@@ -29,6 +29,15 @@ That's it! Our software will:
 
 This will be written into a JSON file at `results/response.json` for further analysis by researchers. 
 
+### Dependencies
+
+- `ffmpeg`
+- `cv2`
+- `numpy` and `pandas`
+- `SpeechRecognition`
+
+Most of these can be installed with `pip` and `ffmpeg` should be installed on your system by default. 
+
 ### More information
 
 Please see `src/` for the code, which we have made every effort to be as readable as possible.  
