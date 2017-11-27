@@ -26,7 +26,10 @@ time: data/video.mp4
 
 clean:
 	rm -rf frames/
-	rm data/transcript.json
-	rm data/*.wav
-	rm data/video.mp4
+	rm -f data/transcript.json
+	rm -f data/*.wav
+	rm -f data/video.mp4
+	rm -f data/*.wav
+	rm -f data/data.json
+	
 	
