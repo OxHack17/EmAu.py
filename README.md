@@ -1,7 +1,7 @@
 # Emotion Augmentation by Key Words and Phrases
 ### Using Microsoft Cognitive Services to find words which alter emotional response in doctor-patient interactions. 
 
-**Authors**: Chris Eijsbouts (@cqgd), Chris Cole (@Chris1221), Wilder Wohns (@awohns).
+**Authors**: Chris Eijsbouts ([@cqgd](https://github.com/cqgd)), Chris Cole ([@Chris1221](https://github.com/Chris1221)), Wilder Wohns ([@awohns](https://github.com/awohns)).
 
 This project was created as a part of [Oxford Hack 2017](http://oxfordhack.com/) as a part of the Microsoft Cognitive API challenge. 
 
@@ -32,6 +32,9 @@ This will be written into a JSON file at `results/response.json` for further ana
 ### More information
 
 Please see `src/` for the code, which we have made every effort to be as readable as possible.  
+
+
+![](http://oxfordhack.com/assets/img/logo%20microsoft.png)
 
 ---
 
