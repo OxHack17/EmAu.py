@@ -3,7 +3,7 @@
 time := $(shell ffprobe -v error -select_streams v:0 -show_entries stream=duration -of default=noprint_wrappers=1:nokey=1 data/video.mp4)
 time_up := $(shell printf "%.0f\n" $(time)) 
 
-all: data/video.mp4 images data/transcript.json
+all: data/video.mp4 images audio
 
 
 data/video.mp4: data/video.MOV
